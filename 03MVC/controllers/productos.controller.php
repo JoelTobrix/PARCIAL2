@@ -93,7 +93,7 @@ switch ($_GET["op"]) {
         break;
 
     default:
-        echo json_encode(["error" => "Invalid operation."]);
+        
         break;
 }
 ?>

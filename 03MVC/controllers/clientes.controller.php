@@ -94,7 +94,7 @@ case 'eliminar': // Procedimiento para eliminar un cliente en la base de datos
     break;
 
 default:
-    echo json_encode(["error" => "Invalid operation."]);
+    
     break;
 }
 

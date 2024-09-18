@@ -1,0 +1,7 @@
+Poner estos links para ver los datos, por si sale error, Poner
+http://localhost/parcial/03MVC/controllers/productos.controller.php?op=todos
+http://localhost/parcial/03MVC/controllers/clientes.controller.php?op=todos
+Nombre: Joel Brito Semestre: Sexto
+EJERCICIOS
+1. Sistema de Gestión de Ventas: Crea una base de datos para gestionar productos y clientes, incluyendo ventas. Tablas: Productos (producto_id, nombre, descripcion, precio, stock), Clientes (cliente_id, nombre, apellido, email, telefono). Joel Brito
+Usar angular, backend frontedn
