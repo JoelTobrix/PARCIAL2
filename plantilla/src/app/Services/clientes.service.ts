@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ClientesService {
-  apiurl = 'http://localhost/03MVC/controllers/clientes.controller.php?op=';
+  apiurl = 'http://localhost/parcial/03MVC/controllers/clientes.controller.php?op=';
   constructor(private lector: HttpClient) {}
 
   buscar(texto: string): Observable<ICliente> {
@@ -20,33 +20,35 @@ export class ClientesService {
   todos(): Observable<ICliente[]> {
     return this.lector.get<ICliente[]>(this.apiurl + 'todos');
   }
-  uno(idClientes: number): Observable<ICliente> {
+
+  uno(cliente_id: number): Observable<ICliente> {
     const formData = new FormData();
-    formData.append('idClientes', idClientes.toString());
+    formData.append('cliente_id', cliente_id.toString());
     return this.lector.post<ICliente>(this.apiurl + 'uno', formData);
   }
-  eliminar(idClientes: number): Observable<number> {
+
+  eliminar(cliente_id: number): Observable<number> {
     const formData = new FormData();
-    formData.append('idClientes', idClientes.toString());
+    formData.append('cliente_id', cliente_id.toString());
     return this.lector.post<number>(this.apiurl + 'eliminar', formData);
   }
+
   insertar(cliente: ICliente): Observable<string> {
     const formData = new FormData();
-    formData.append('Nombres', cliente.Nombres);
-    formData.append('Direccion', cliente.Direccion);
-    formData.append('Telefono', cliente.Telefono);
-    formData.append('Cedula', cliente.Cedula);
-    formData.append('Correo', cliente.Correo);
+    formData.append('nombre', cliente.nombre);
+    formData.append('apellido', cliente.apellido);
+    formData.append('email', cliente.email);
+    formData.append('telefono', cliente.telefono);
     return this.lector.post<string>(this.apiurl + 'insertar', formData);
   }
+
   actualizar(cliente: ICliente): Observable<string> {
     const formData = new FormData();
-    formData.append('idClientes', cliente.idClientes.toString());
-    formData.append('Nombres', cliente.Nombres);
-    formData.append('Direccion', cliente.Direccion);
-    formData.append('Telefono', cliente.Telefono);
-    formData.append('Cedula', cliente.Cedula);
-    formData.append('Correo', cliente.Correo);
+    formData.append('cliente_id', cliente.cliente_id.toString());
+    formData.append('nombre', cliente.nombre);
+    formData.append('apellido', cliente.apellido);
+    formData.append('email', cliente.email);
+    formData.append('telefono', cliente.telefono);
     return this.lector.post<string>(this.apiurl + 'actualizar', formData);
   }
 }

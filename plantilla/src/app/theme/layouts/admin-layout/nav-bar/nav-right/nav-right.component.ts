@@ -28,7 +28,7 @@ import {
   ArrowRightOutline,
   GithubOutline
 } from '@ant-design/icons-angular/icons';
-import { UsuariosService } from 'src/app/Services/usuarios.service';
+//import { UsuariosService } from 'src/app/Services/usuarios.service';
 
 @Component({
   selector: 'app-nav-right',
@@ -45,7 +45,7 @@ export class NavRightComponent {
 
   constructor(
     private iconService: IconService,
-    private usuariosServicio: UsuariosService
+    //private usuariosServicio: UsuariosService
   ) {
     this.windowWidth = window.innerWidth;
     this.iconService.addIcon(
@@ -114,6 +114,6 @@ export class NavRightComponent {
   ];
 
   salir() {
-    this.usuariosServicio.logout();
+    //this.usuariosServicio.logout();
   }
 }

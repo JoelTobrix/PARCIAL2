@@ -3,7 +3,7 @@
       <app-card cardTitle="Lista de Productos" blockClass="pc-component">
         <div class="col-md-12 col-xl-8">
           <h5 class="mb-3">
-            <a routerLink="/nuevoproducto" class="btn btn-outline-dark">Nuevo Producto</a>
+            <a href="nuevoproducto" class="btn btn-outline-dark">Nuevo Producto</a>
           </h5>
           <div class="card tbl-card">
             <div class="table-responsive">
@@ -11,29 +11,29 @@
                 <thead>
                   <tr>
                     <th>#</th>
-                    <th>Código de Barras</th>
                     <th>Nombre</th>
-                    <th>Graba IVA</th>
-                    <th>Valor de Compra</th>
-                    <th>Valor de Venta</th>
-                    <th class="text-end">Acciones</th>
+                    <th>Descripción</th>
+                    <th>Precio</th>
+                    <th>Stock</th>
+                    <th></th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let producto of listaproductos; let i = index; trackBy: trackByFn">
-                    <td>{{ i + 1 }}</td>
-                    <td>{{ producto.Codigo_Barras }}</td>
-                    <td>{{ producto.Nombre_Producto }}</td>
-                    <td>{{ +producto.Graba_IVA === 1 ? 'Sí' : 'No' }}</td>
-                    <td>{{ producto.Valor_Compra | currency }}</td>
-                    <td>{{ producto.Valor_Venta | currency }}</td>
-                    <td>
-                      <button type="button" class="btn btn-outline-success" [routerLink]="['/editarproducto', producto.idProductos]">
-                        Editar
-                      </button>
-                      <button (click)="eliminar(producto.idProductos)" type="button" class="btn btn-outline-danger">Eliminar</button>
-                    </td>
-                  </tr>
+                  @for (producto of listaproductos; track $index) {
+                    <tr>
+                      <td>{{ $index + 1 }}</td>
+                      <td>{{ producto.nombre }}</td>
+                      <td>{{ producto.descripcion }}</td>
+                      <td>{{ producto.precio }}</td>
+                      <td>{{ producto.stock }}</td>
+                      <td>
+                        <button type="button" class="btn btn-outline-success" [routerLink]="['/editarproducto/', producto.producto_id]">
+                          Editar
+                        </button>
+                        <button (click)="eliminar(producto.producto_id)" type="button" class="btn btn-outline-danger">Eliminar</button>
+                      </td>
+                    </tr>
+                  }
                 </tbody>
               </table>
             </div>
@@ -42,3 +42,4 @@
       </app-card>
     </div>
   </div>
+  

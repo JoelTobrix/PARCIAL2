@@ -1,74 +1,88 @@
-import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Iproveedor } from 'src/app/Interfaces/iproveedor';
-import { IUnidadMedida } from 'src/app/Interfaces/iunidadmedida';
-import { Iiva } from 'src/app/Interfaces/Iiva';
-import { ProveedorService } from 'src/app/Services/proveedores.service';
-import { UnidadmedidaService } from 'src/app/Services/unidadmedida.service';
-import { ReactiveFormsModule } from '@angular/forms';
-import { FormsModule } from '@angular/forms';
-import { IvaService } from 'src/app/Services/iva.service';
+import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
+import { ProductosService } from 'src/app/Services/productos.service'; // Asegúrate de tener este servicio
+import { IProductos } from 'src/app/Interfaces/iproductos'; // Asegúrate de tener esta interfaz
+import { CommonModule } from '@angular/common';
+import Swal from 'sweetalert2';
+import { ActivatedRoute, Router } from '@angular/router';
+
 @Component({
   selector: 'app-nuevoproducto',
   standalone: true,
-  imports: [ReactiveFormsModule, FormsModule, CommonModule], // Verifica que ReactiveFormsModule esté aquí
+  imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './nuevoproducto.component.html',
   styleUrls: ['./nuevoproducto.component.scss']
 })
-
 export class NuevoproductoComponent implements OnInit {
-  listaUnidadMedida: IUnidadMedida[] = [];
-  listaProveedores: Iproveedor[] = [];
-  listaIva: Iiva[]=[];
-  titulo = '';
-  frm_Producto: FormGroup;
+  frm_Producto = new FormGroup({
+    nombre: new FormControl('', Validators.required),
+    descripcion: new FormControl('', Validators.required),
+    precio: new FormControl('', [Validators.required, Validators.min(0)]),
+    stock: new FormControl('', [Validators.required, Validators.min(0)])
+  });
+
+  producto_id = 0;
+  titulo = 'Nuevo Producto';
 
   constructor(
-    private unidadServicio: UnidadmedidaService,
-    private fb: FormBuilder,
-    private proveedorServicio: ProveedorService,
-    private ivaServicio: IvaService,
+    private productoServicio: ProductosService,
+    private navegacion: Router,
+    private ruta: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
-    this.unidadServicio.todos().subscribe((data) => (this.listaUnidadMedida = data));
-    this.proveedorServicio.todos().subscribe((data) => (this.listaProveedores = data));
-    this.ivaServicio.todos().subscribe((data)=> (this.listaIva = data));
-    
-    // Crear el formulario al cargar el componente
-    this.crearFormulario();
-  }
+    this.producto_id = parseInt(this.ruta.snapshot.paramMap.get('idProducto') || '0', 10);
+    if (this.producto_id > 0) {
+      this.productoServicio.uno(this.producto_id).subscribe((unproducto) => {
+        this.frm_Producto.controls['nombre'].setValue(unproducto.nombre);
+        this.frm_Producto.controls['descripcion'].setValue(unproducto.descripcion);
+        this.frm_Producto.controls['precio'].setValue(unproducto.precio);
+        this.frm_Producto.controls['stock'].setValue(unproducto.stock);
 
-  crearFormulario() {
-    this.frm_Producto = this.fb.group({
-      Codigo_Barras: ['', Validators.required],
-      Nombre_Producto: ['', Validators.required],
-      Graba_IVA: ['', Validators.required],
-      Unidad_Medida_idUnidad_Medida: ['', Validators.required],
-      IVA_idIVA: ['', Validators.required],  // Aquí el campo IVA
-      Cantidad: ['', [Validators.required, Validators.min(1)]],
-      Valor_Compra: ['', [Validators.required, Validators.min(0)]],
-      Valor_Venta: ['', [Validators.required, Validators.min(0)]],
-      Proveedores_idProveedores: ['', Validators.required]
-    });
+        this.titulo = 'Editar Producto';
+      });
+    }
   }
 
   grabar() {
-    if (this.frm_Producto.valid) {
-      const nuevoProducto = this.frm_Producto.value;
-      console.log('Producto a grabar:', nuevoProducto);
-      // Aquí puedes agregar la lógica para guardar el producto (enviar a tu backend o API)
-    } else {
-      console.log('El formulario no es válido');
-    }
+    let producto: IProductos = {
+      producto_id: this.producto_id,
+      nombre: this.frm_Producto.controls['nombre'].value,
+      descripcion: this.frm_Producto.controls['descripcion'].value,
+      precio: this.frm_Producto.controls['precio'].value,
+      stock: this.frm_Producto.controls['stock'].value
+    };
+
+    Swal.fire({
+      title: 'Productos',
+      text: '¿Desea guardar el Producto ' + this.frm_Producto.controls['nombre'].value + '?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#f00',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Grabar!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        if (this.producto_id > 0) {
+          this.productoServicio.actualizar(producto).subscribe((res: any) => {
+            Swal.fire({
+              title: 'Productos',
+              text: res.mensaje,
+              icon: 'success'
+            });
+            this.navegacion.navigate(['/productos']);
+          });
+        } else {
+          this.productoServicio.insertar(producto).subscribe((res: any) => {
+            Swal.fire({
+              title: 'Productos',
+              text: res.mensaje,
+              icon: 'success'
+            });
+            this.navegacion.navigate(['/productos']);
+          });
+        }
+      }
+    });
   }
 }
-
-    /*
-1.- Modelo => Solo el procedieminto para realizar un select
-2.- Controador => Solo el procedieminto para realizar un select
-3.- Servicio => Solo el procedieminto para realizar un select
-4.-  realizar el insertar y actualizar
-
-*/

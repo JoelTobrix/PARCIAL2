@@ -1,61 +1,54 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { IProducto } from '../Interfaces/iproducto'; // Asegúrate de crear esta interfaz
+
+import { IProductos } from '../Interfaces/iproductos';  // Cambia la interfaz a IProducto
 import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ProductoService {
-  apiurl = 'http://localhost/sexto/Proyectos/03MVC/controllers/productos.controller.php?op=';
+export class ProductosService {
+  apiurl = 'http://localhost/parcial/03MVC/controllers/productos.controller.php?op=';
+  constructor(private lector: HttpClient) {}
 
-  constructor(private http: HttpClient) {}
-
-  // Método para obtener todos los productos
-  todos(): Observable<IProducto[]> {
-    return this.http.get<IProducto[]>(this.apiurl + 'todos');
+  buscar(texto: string): Observable<IProductos> {
+    const formData = new FormData();
+    formData.append('texto', texto);
+    return this.lector.post<IProductos>(this.apiurl + 'uno', formData);
   }
 
-  // Método para obtener un producto por su ID
-  uno(idProductos: number): Observable<IProducto> {
-    const formData = new FormData();
-    formData.append('idProductos', idProductos.toString());
-    return this.http.post<IProducto>(this.apiurl + 'uno', formData);
+  todos(): Observable<IProductos[]> {
+    return this.lector.get<IProductos[]>(this.apiurl + 'todos');
   }
 
-  // Método para eliminar un producto por su ID
-  eliminar(idProductos: number): Observable<number> {
+  uno(producto_id: number): Observable<IProductos> {
     const formData = new FormData();
-    formData.append('idProductos', idProductos.toString());
-    return this.http.post<number>(this.apiurl + 'eliminar', formData);
+    formData.append('producto_id', producto_id.toString());
+    return this.lector.post<IProductos>(this.apiurl + 'uno', formData);
   }
 
-  // Método para insertar un nuevo producto junto con el kardex
-  insertar(producto: IProducto): Observable<string> {
+  eliminar(producto_id: number): Observable<number> {
     const formData = new FormData();
-    formData.append('Codigo_Barras', producto.Codigo_Barras);
-    formData.append('Nombre_Producto', producto.Nombre_Producto);
-    formData.append('Graba_IVA', producto.Graba_IVA.toString());
-    formData.append('Unidad_Medida_idUnidad_Medida', producto.Unidad_Medida_idUnidad_Medida.toString());
-    formData.append('IVA_idIVA', producto.IVA_idIVA.toString());
-    formData.append('Cantidad', producto.Cantidad.toString());
-    formData.append('Valor_Compra', producto.Valor_Compra.toString());
-    formData.append('Valor_Venta', producto.Valor_Venta.toString());
-    formData.append('Proveedores_idProveedores', producto.Proveedores_idProveedores.toString());
-
-    // Insertar el producto y kardex
-    return this.http.post<string>(this.apiurl + 'insertar', formData);
+    formData.append('producto_id', producto_id.toString());
+    return this.lector.post<number>(this.apiurl + 'eliminar', formData);
   }
 
-  // Método para actualizar un producto
-  actualizar(producto: IProducto): Observable<string> {
+  insertar(producto: IProductos): Observable<string> {
     const formData = new FormData();
-    formData.append('idProductos', producto.idProductos.toString());
-    formData.append('Codigo_Barras', producto.Codigo_Barras);
-    formData.append('Nombre_Producto', producto.Nombre_Producto);
-    formData.append('Graba_IVA', producto.Graba_IVA.toString());
+    formData.append('nombre', producto.nombre);
+    formData.append('descripcion', producto.descripcion);
+    formData.append('precio', producto.precio.toString());
+    formData.append('stock', producto.stock.toString());
+    return this.lector.post<string>(this.apiurl + 'insertar', formData);
+  }
 
-    // Actualizar el producto
-    return this.http.post<string>(this.apiurl + 'actualizar', formData);
+  actualizar(producto: IProductos): Observable<string> {
+    const formData = new FormData();
+    formData.append('producto_id', producto.producto_id.toString());
+    formData.append('nombre', producto.nombre);
+    formData.append('descripcion', producto.descripcion);
+    formData.append('precio', producto.precio.toString());
+    formData.append('stock', producto.stock.toString());
+    return this.lector.post<string>(this.apiurl + 'actualizar', formData);
   }
 }

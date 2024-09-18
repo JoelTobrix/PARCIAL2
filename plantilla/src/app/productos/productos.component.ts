@@ -1,52 +1,48 @@
 import { Component, OnInit } from '@angular/core';
-import { SharedModule } from '../theme/shared/shared.module';
 import { RouterLink } from '@angular/router';
-import { IProducto } from '../Interfaces/iproducto';
-import { ProductoService } from '../Services/productos.service';
+import { SharedModule } from 'src/app/theme/shared/shared.module';
+import { IProductos } from '../Interfaces/iproductos';  // Cambiar la interfaz de cliente a producto
+import { ProductosService } from '../Services/productos.service';  // Cambiar el servicio a productos
 import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-productos',
   standalone: true,
-  imports: [SharedModule, RouterLink],
+  imports: [RouterLink, SharedModule],
   templateUrl: './productos.component.html',
   styleUrl: './productos.component.scss'
 })
-export class ProductosComponent implements OnInit {
-  listaproductos: IProducto[] = [];
+export class ProductosComponent implements OnInit {  // Asegurarse de que implemente OnInit
+  listaproductos: IProductos[] = [];  // Cambiar de lista de clientes a lista de productos
 
-  constructor(private prodcutoServicio: ProductoService) {}
+  constructor(private productoServicio: ProductosService) {}  // Cambiar el servicio inyectado
 
-  ngOnInit(): void {
-    this.cargaproductos();
+  ngOnInit() {
+    this.cargatabla();
   }
 
-  cargaproductos() {
-    this.prodcutoServicio.todos().subscribe((data) => {
-      this.listaproductos = data;
+  cargatabla() {
+    this.productoServicio.todos().subscribe((data) => {  // Cambiar la referencia del servicio
       console.log(data);
+      this.listaproductos = data;  // Asignar a la lista de productos
     });
   }
-  trackByFn() {}
 
-  eliminar(idProductos) {
+  eliminar(idProducto) {  // Cambiar el id de cliente a producto
     Swal.fire({
-      title: '¿Estás seguro?',
-      text: 'Esta acción eliminará el producto',
+      title: 'Productos',
+      text: '¿Está seguro que desea eliminar el producto?',
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Sí, eliminar',
-      cancelButtonText: 'Cancelar'
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Eliminar Producto'
     }).then((result) => {
       if (result.isConfirmed) {
-        this.prodcutoServicio.eliminar(idProductos).subscribe((data) => {
-          this.cargaproductos();
+        this.productoServicio.eliminar(idProducto).subscribe((data) => {  // Cambiar la referencia del servicio
+          Swal.fire('Productos', 'El producto ha sido eliminado.', 'success');
+          this.cargatabla();  // Recargar la tabla de productos
         });
-        Swal.fire('Eliminado', 'El producto ha sido eliminado', 'success');
-      } else {
-        Swal.fire('Error', 'Ocurrio un erro', 'error');
       }
     });
   }

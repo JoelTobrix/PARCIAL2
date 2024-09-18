@@ -3,5 +3,5 @@ export interface ICliente {
 nombre: string;
 apellido: string;
 email: string;
-telefono: number;
+telefono: string;
 }
