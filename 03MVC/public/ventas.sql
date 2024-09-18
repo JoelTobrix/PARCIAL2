@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost:3306
--- Tiempo de generación: 18-09-2024 a las 06:00:19
+-- Tiempo de generación: 18-09-2024 a las 18:00:17
 -- Versión del servidor: 5.7.24
 -- Versión de PHP: 7.3.7
 
@@ -77,6 +77,29 @@ INSERT INTO `productos` (`producto_id`, `nombre`, `descripcion`, `precio`, `stoc
 (10, 'galak', 'agotado', '0', 0),
 (11, 'chupetes', 'agotado', '0', 0);
 
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `ventas`
+--
+
+CREATE TABLE `ventas` (
+  `venta_id` int(11) NOT NULL,
+  `fecha` date NOT NULL,
+  `cliente_id` int(11) NOT NULL,
+  `producto_id` int(11) NOT NULL,
+  `cantidad` int(11) NOT NULL,
+  `total` decimal(10,3) NOT NULL,
+  `forma_pago` varchar(46) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Volcado de datos para la tabla `ventas`
+--
+
+INSERT INTO `ventas` (`venta_id`, `fecha`, `cliente_id`, `producto_id`, `cantidad`, `total`, `forma_pago`) VALUES
+(1, '2024-09-04', 2, 2, 2, '10.100', 'efectivo');
+
 --
 -- Índices para tablas volcadas
 --
@@ -94,6 +117,12 @@ ALTER TABLE `productos`
   ADD PRIMARY KEY (`producto_id`);
 
 --
+-- Indices de la tabla `ventas`
+--
+ALTER TABLE `ventas`
+  ADD PRIMARY KEY (`venta_id`);
+
+--
 -- AUTO_INCREMENT de las tablas volcadas
 --
 
@@ -108,6 +137,12 @@ ALTER TABLE `clientes`
 --
 ALTER TABLE `productos`
   MODIFY `producto_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
+-- AUTO_INCREMENT de la tabla `ventas`
+--
+ALTER TABLE `ventas`
+  MODIFY `venta_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
